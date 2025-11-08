@@ -49,7 +49,7 @@ public class MovementSystem {
     public void HandleMoveInput()
     {
         double moveDirX = opMode.gamepad1.left_stick_x;
-        double moveDirY = -opMode.gamepad1.left_stick_y;
+        double moveDirY = opMode.gamepad1.left_stick_y;
         double magnitude = Math.sqrt(moveDirX * moveDirX + moveDirY * moveDirY);
 
         //sprint mode

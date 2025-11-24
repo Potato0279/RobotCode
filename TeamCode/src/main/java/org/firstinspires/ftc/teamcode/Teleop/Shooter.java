@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Shooter {
-    //Initializes all variables required to shoot. Motors on turret, blocker servos, and feeder/turret CRServos
+    //Initializes all variables required to shoot. Motors on turret, blocker servos, and turret CRServo
     OpMode op;
     public static DcMotorEx leftShooter, rightShooter;
-    CRServo turretRotator, leftFeeder, rightFeeder;
+    CRServo turretRotator;
     Servo blocker;
 
     //Velocity Tester increments for shooterTesterConTwo()
@@ -24,8 +24,6 @@ public class Shooter {
     double SPIN_UP_VELOCITY_SHORTRANGE = 950;
     double SPIN_UP_VELOCITY_MEDIUMRANGE = 1050;
     double SPIN_UP_VELOCITY_LONGRANGE = 1250;
-    double MIN_PWR_BLOCKER = -1;
-    double MAX_PWR_BLOCKER = 1;
     double TURRET_ROTATE_SPEED = 0.2;
 
     //PIDF Variables
@@ -51,11 +49,6 @@ public class Shooter {
         rightShooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightShooter.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
-        leftFeeder = op.hardwareMap.crservo.get("leftFeeder");
-
-        rightFeeder = op.hardwareMap.crservo.get("rightFeeder");
-        rightFeeder.setDirection(CRServo.Direction.REVERSE);
-
         turretRotator = op.hardwareMap.crservo.get("turretRotator");
         turretRotator.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -76,23 +69,15 @@ public class Shooter {
         }else if (op.gamepad2.right_bumper){
             rightShooter.setVelocity(SPIN_UP_VELOCITY_MEDIUMRANGE);
             leftShooter.setVelocity(SPIN_UP_VELOCITY_MEDIUMRANGE);
-        } else if (op.gamepad2.y){
+        } else if (op.gamepad2.y) {
             rightShooter.setVelocity(SPIN_UP_VELOCITY_SHORTRANGE);
             leftShooter.setVelocity(SPIN_UP_VELOCITY_SHORTRANGE);
-        }else if (op.gamepad2.dpad_up){
-            leftFeeder.setPower(MAX_PWR_BLOCKER);
-            rightFeeder.setPower(MAX_PWR_BLOCKER);
-        } else if (op.gamepad2.dpad_down){
-            leftFeeder.setPower(MIN_PWR_BLOCKER);
-            rightFeeder.setPower(MIN_PWR_BLOCKER);
-        } else if (op.gamepad2.left_bumper){
+        }else if (op.gamepad2.left_bumper){
             leftShooter.setPower(-SPIN_UP_VELOCITY_SHORTRANGE *0.5);
             rightShooter.setPower(-SPIN_UP_VELOCITY_SHORTRANGE *0.5);
         }else {
             rightShooter.setPower(0);
             leftShooter.setPower(0);
-            leftFeeder.setPower(0);
-            rightFeeder.setPower(0);
         }
         op.telemetry.addLine("Spin Power: " + rightShooter.getVelocity());
     }
